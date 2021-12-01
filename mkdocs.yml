@@ -1,0 +1,37 @@
+site_name: ioBroker Adapter Development
+copyright: Copyright &copy; 2021 ioBroker project
+repo_url: https://github.com/ioBroker/dev-docs
+edit_uri: edit/main/docs/
+theme:
+  name: material
+  favicon: assets/images/favicon.ico
+  logo: assets/images/logo.png
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - search.suggest
+    - search.highlight
+plugins:
+  - search
+  - git-revision-date
+extra:
+  version:
+    provider: mike
+    default: stable
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ioBroker
+    - icon: fontawesome/regular/comments
+      link: https://forum.iobroker.net/category/8/entwicklung
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/Ne3y6fUac3
+      name: Developer Channel on Discord
+    - icon: fontawesome/brands/telegram
+      link: https://t.me/ioBroker_development
+      name: Developer Group on Telegram
