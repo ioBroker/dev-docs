@@ -4,7 +4,7 @@ Developer documentation available on https://iobroker.github.io/dev-docs/
 
 ## Contribute
 
-This documentation uses [MkDocs](https://www.mkdocs.org/getting-started/) and [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/getting-started/).
+This documentation uses [MkDocs](https://www.mkdocs.org/getting-started/), [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/getting-started/) and [PyMdown Extensions](https://facelessuser.github.io/pymdown-extensions/).
 
 ```
 pip install -r requirements.txt

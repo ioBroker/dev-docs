@@ -4,6 +4,7 @@ repo_url: https://github.com/ioBroker/dev-docs
 edit_uri: edit/main/docs/
 theme:
   name: material
+  language: en
   favicon: assets/images/favicon.ico
   logo: assets/images/logo.png
   icon:
@@ -35,3 +36,17 @@ extra:
     - icon: fontawesome/brands/telegram
       link: https://t.me/ioBroker_development
       name: Developer Group on Telegram
+
+markdown_extensions:
+  - pymdownx.highlight:
+      use_pygments: true
+      linenums: true
+      anchor_linenums: true
+  - pymdownx.superfences
+
+nav:
+  - Home:
+    - Intro: index.md
+    - Getting Started: getting-started.md
+  - Best Practice:
+    - Objects: best-practice/objects.md
