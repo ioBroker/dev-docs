@@ -1,0 +1,21 @@
+html {
+  overflow-y: scroll;
+}
+
+body:before{
+    content: 'UNDER CONSTRUCTION - DO NOT USE';
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    
+    color: #990000;
+    font-size: 100px;
+    font-weight: bolder;
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    opacity: 0.3;
+  }
