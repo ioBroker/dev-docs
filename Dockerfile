@@ -1,5 +1,5 @@
 FROM squidfunk/mkdocs-material:latest
 
-RUN pip install \
-    mkdocs-include-dir-to-nav \
-    mkdocs-git-revision-date-localized-plugin
+COPY requirements.txt requirements.txt
+
+RUN pip install mkdocs-material -r requirements.txt
