@@ -13,6 +13,7 @@ npx @iobroker/create-adapter
 
 It is recommended to try creator with dummy data the first few times. For this getting started you can enter dummy data and select random options (play around) for the most questions. You can decide if you want to do Javascript or Typescript. The only important options to follow the getting started are:
 
+<!-- TODO: this needs to change if https://github.com/ioBroker/create-adapter/issues/724 gets fixed. -->
 * `Adapter` (instead of `Visualization`)
 * `no` to React for Admin UI
 * `yes` to dev-server
