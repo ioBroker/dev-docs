@@ -1,11 +1,11 @@
 # Adapter Translations
 
-Whenever possible, you should provide multiple languages for everything the user will see. Like
+Whenever possible, adapters should provide multiple languages for everything the user will see. Like
 
 - Adapter name
 - Adapter description
 - Adapter news
-- Objects
+- Object names
 - Instance configuration inputs
 - VIS widgets
 - End user documentation / help
@@ -28,7 +28,21 @@ Whenever possible, you should provide multiple languages for everything the user
 
 ## Translation tools
 
-If you want to translate an English text to multiple languages, you can use the [ioBroker translator tool](https://translator.iobroker.in). It will translate any English phrase to all supported languages and returns JSON.
+### Dev-Tools
+
+<!-- Note: source https://github.com/ioBroker/adapter-dev -->
+
+The easiest way to translate strings is the [adapter-dev package](https://github.com/ioBroker/adapter-dev).
+
+It should be added as a dev dependency the adapter project and provides several commands to translate admin UI, io-package objects and other texts.
+
+```
+npm install --save-dev @iobroker/adapter-dev
+```
+
+### Website
+
+To translate an English text to multiple languages, the [ioBroker translator tool](https://translator.iobroker.in) is also helpful. The website will translate any English phrase to all supported languages and returns JSON.
 
 Example output:
 
