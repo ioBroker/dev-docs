@@ -5,7 +5,7 @@ Developer documentation available on https://iobroker.github.io/dev-docs/
 
 **Note:** Don't use git bash under Windows!
 
-Linux:
+Linux / MacOS:
 ```
 docker build . -t mkdocs-iobroker
 docker run --rm -it -p 8000:8000 -v ${PWD}:/docs mkdocs-iobroker
