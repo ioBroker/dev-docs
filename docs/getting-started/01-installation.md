@@ -17,9 +17,10 @@ To develop for ioBroker you need the current NodeJS LTS version installed on you
 - [Enterprise Linux based distributions (rpm)](https://github.com/nodesource/distributions#rpm)
 - [All other systems](https://nodejs.org/en/download/#:~:text=Additional%20Platforms)
 
-## Install Visual Studio Code
+## Install Visual Studio Code (optional)
 
-As an IDE (integrated development environment) we will use Visual Studio Code.
+As an IDE (integrated development environment) we will use Visual Studio Code in this tutorial.
+If you want to use another IDE or simple texteditor, that is fine, too.
 
 Please download it from the [official page](https://code.visualstudio.com/download).
 
