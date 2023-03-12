@@ -3,7 +3,7 @@ html {
 }
 
 body:before{
-    content: 'UNDER CONSTRUCTION - INCOMPLETE AND UNVERIFIED';
+    content: 'UNDER CONSTRUCTION';
     position: fixed;
     top: 0;
     bottom: 0;
