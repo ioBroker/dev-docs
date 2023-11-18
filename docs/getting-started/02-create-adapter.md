@@ -11,15 +11,16 @@ First, run the [adapter creator](https://github.com/ioBroker/create-adapter) in 
 npx @iobroker/create-adapter
 ```
 
-It is recommended to try creator with dummy data the first few times. For this getting started you can enter dummy data and select random options (play around) for the most questions. You can decide if you want to do Javascript or Typescript. The only important options to follow the getting started are:
+It is recommended to try creator with dummy data the first few times. For this getting started you can enter dummy data and select random options (play around) for the most questions. You can decide if you want to do Javascript or Typescript. The only important options to follow the rest of this getting started are:
 
-<!-- TODO: this needs to change if https://github.com/ioBroker/create-adapter/issues/724 gets fixed. -->
 * `Adapter` (instead of `Visualization`)
-* `no` to React for Admin UI
+* `JSON UI` to the question about the framework for Admin UI.
 * `yes` to dev-server
 
 You can have a look at the folders and files created. It is a complete template of an ioBroker adapter. The most important
-file is `main.js` or `main.ts` where your code goes. The UI for controlling options of your adapter goes into `admin`.
+file is `main.js` or `src/main.ts` where your code goes. The UI for controlling options of your adapter goes into `admin`.
+If you selected `JSON UI` before, you will find a `admin/jsonConfig.json` file there, which we will use to define a simple
+UI which is sufficient for most adapters.
 
 Now move into your adapter dir and fire up dev-server:
 ```bash
@@ -27,6 +28,6 @@ cd ioBroker.test
 dev-server watch
 ```
 
-It will run ioBroker and you can access admin at http://localhost:8081
+It will run ioBroker, and you can access admin at http://localhost:8081
 
 [Continue to "Write adapter code"](03-edit-adapter.md){ .md-button .md-button--primary }
