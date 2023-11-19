@@ -16,6 +16,7 @@ It is recommended to try creator with dummy data the first few times. For this g
 * `Adapter` (instead of `Visualization`)
 * `JSON UI` to the question about the framework for Admin UI.
 * `yes` to dev-server
+* `yes` to 'Would you like to automate new releases with one simple command?' (release script).
 
 You can have a look at the folders and files created. It is a complete template of an ioBroker adapter. The most important
 file is `main.js` or `src/main.ts` where your code goes. The UI for controlling options of your adapter goes into `admin`.
