@@ -1,88 +1,79 @@
 # Publishing your adapter
-## one time to do for the release/publishing
-### ioBroker developer portal
-go to https://www.iobroker.dev/adapter-check
 
-Check your adapter by giving your adapter git repository. This will check a lot of important standarts. The following could be ignored:
+## Check Adapter before publishing
 
-[E200] "Not found on npm. Please publish" 
+Of course you should check if your adapter is working as expected, before publishing it. But there are also some requirements
+that can be automatically tested. You can either do that in the [ioBroker developer portal](https://www.iobroker.dev/adapter-check) (log in with
+your GitHub account and it should already list your adapters) or [manually online](https://adapter-check.iobroker.in/) (paste the repository URL there).
 
-[W400] "Cannot find "your adapter" in latest repository
+Some of the warnings can be ignored, for example if your adapter is not yet on npm or in the repository.
 
-because we have not published. Have a look to all other errors and warnings.
+Good resources for solving such errors and warnings can be found in the [best practices](https://github.com/ioBroker/ioBroker.repositories#development-and-coding-best-practices)
+and in the [review checklist for entry into the repository](https://github.com/ioBroker/ioBroker.repositories/blob/master/REVIEW_CHECKLIST.md). 
 
-Good resources for solving such errors and warnings could be found at https://github.com/ioBroker/ioBroker.repositories#development-and-coding-best-practices and https://github.com/ioBroker/ioBroker.repositories/blob/master/REVIEW_CHECKLIST.md. 
+## Publish
 
-<!-- ToDo: include the two links into this documents. -->
+It is strongly recommended to use the release script and the `test-and-release` workflow. If you answered the question 
+'Do you want to release your adapter with a single comment' in the creator with 'yes', release script should already be
+installed and configured. If not, have a look [here](https://github.com/AlCalzone/release-script/blob/master/README.md) 
+or in the [sample adapter](https://github.com/ioBroker/ioBroker.example/blob/master/JavaScript/.releaseconfig.json).
 
-### npm
+### NPM
+In order for the workflow to also publish your adapter to npm, you need to add a secret to your repository. Log in to 
+[NPM](https://www.npmjs.com/) or create an account (might use your GitHub account for that). You *should* enable 2FA for 
+your account.
 
-Log in to https://www.npmjs.com/ (best with your github account)
+On the right side, you should see your profile picture. Click on it and select "Access Tokens". Create a new classic token,
+enter a name for you to identify it by (for example 'ioBroker' or your adapter name) and select 'Automation' as type (if it
+does not show up, you did not yet enable 2FA for the account, then select 'Publish', but maybe first enable 2FA. It really makes
+sense!).
 
-Create access token for publish. These tokens may need to be regenerated and exchanged, when you ever has changed your account settings. Especialy when you changed your login method or security level(e.g. 2FA). When you already have 2FA enabled, then you need to generate a token with the type Automation. Type Publish will not working with github.
+Now, *copy the token*. You won't be able to read it again later and have to create a new one.
 
-### github repository from your adapter
+### Add Secret to GitHub
 
-Add the npm token in Settings/Secrets/Actions New repository secrets
+Go to your repository on GitHub and select "Settings" in the top bar. On the left find "Secrets and variables", select 
+"Actions" and click on "New repository secret". Enter the name `NPM_TOKEN` and paste the token you copied from npm. Save.
 
-Name NPM_TOKEN
+Check in Settings/Actions/General if the Workflow permissions are set to "read and write permissions". If not, change it and save.
 
-Value abcdef01234567890abcdef01234567890
+### Enable automatic npm release in workflow file
 
-Check in Settings/Actions/General if the workflowpermissions is set to "read and write permissions". Don't forget to save.
+The last step is to edit the file `.github/workflows/test-and-release.yml` in your adapter. You can do this either with
+the online editor at GitHub or with your favorite editor / IDE and pushing to GitHub, just like other files of your adater.
 
-### content of .github/workflows/test-and-release.yml in your repository
+Open the file, scroll down to the line, where it says '# TODO: To enable automatic npm releases, create a token on npmjs.org'.
+Remove that line and uncomment the following lines, starting with the line where it says `deploy:`. Since it is a yaml file,
+be sure to keep the indentation.
+For now, keep the part with sentry commented out.
 
-Go to #TODO: To enable automatic npm release ...
+## Modify changelog
 
-Uncomment the block and remove the TODO
-
-Decide if you will use Sentry. If not delete all lines with sentry at the beginning. When you like to use the ioBroker Sentry, left it commented out until your adapter is reviewed and in the beta review repository. You need to add the token for Sentry in the same way as for npm, but with
-
-Name SETRY_AUTH_TOKEN
-
-Value 01234567890abcdef01234567890abcdef
-
-Commit the adapter content to github. (Actually the script is only working when your main is not protected or you at least able to push directly to your main)
-
-### optionally modify the package.json
-
-In the section scripts there is the line
-
-``` "release": "release-script" ```
-
-This is doing the magic, if you do
-
-``` npm run release ```
-
-inside the root folder of your repository. This is at the beginning enought, but there are two more release types needed later
-
-```
-npm run release patch
-npm run release minor
-npm run release major
-```
-
-When what? When you have small changes, like bugfixes without new interfaces, use ```npm run release``` or more precise ```npm run release patch```. When you have fully backward compatible changes, like bugfixes, new functions without deleting old functions or just overloaded functions, use ```npm run release minor```. When you have major changes and when you have at least deleted one function, so you have no backward compatibility and the user need to react on your change, use ```npm run release major```.
-
-## todo for every release/publishing
-
-Check if in the readme at the change log section the
+In your `README.md`, at the bottom, there should already be a section 'Work in progress' in the changelog, i.e. 
+looking like this:
 
 ``` ### **WORK IN PROGRESS** ```
 
-line is copied from the Placeholder. Check your last commits, if all changes are well described in the Changelog.
-Commit the adapter content to github. If you have uncommitted changes. Otherwise the release script will fail. 
+This line is a placeholder for the actual date of the release. Just add what you modified as bullet points ('*') below
+that line and the release script will use them as changelog / news and put in the right date. Do this for every release.
 
-Now do:
+## Run release script
 
-``` npm run release patch```
+After all of the above is done, run the release script:
+``` npm run release ```
 
-Thats it.
+It will ask you about the type of release or you can already supply that as parameter (`patch`, `minor` or `major`). 
+Basically, if you fix something, use `patch`, if you add a new feature, use `minor`, 
+if the user needs to change something, use `major`.  See [SemVer](https://semver.org/) for details.
 
-# Trouble shooting
+The script will assemble the changelog, translate it and put it into the `io-package.json`, update the version number, in
+`io-package.json` and `package.json`, commit the changes, create a git tag and push everything to GitHub. This will trigger
+the `deploy` part of the `test-and-release` workflow, so after your adapter passed the (very basic) tests, releases will 
+be created on GitHub and npm.
 
-* Error 504 during translation: The translation of longer text snipets fail sometimes. Shorten the text and retry.
-* Also be sure that all is committed. There are often uncommited changes. But the error message is clear here.
-* best practice: commit the latest status and push to github and check that testing works BEFORE creating a new version (else you need to revert a lot of stuff (especially io-package!) because the version then never went out.
-* Check your emails/github actions page to see if the release was successfull
+## Trouble shooting
+
+* Error 504 during translation: The translation of longer text snippets fail sometimes. Shorten the text and retry.
+* Also be sure that all is committed. There are often uncommitted changes. But the error message is clear here.
+* Best practice: run the tests locally or at least commit the latest status and push to GitHub and check that testing works BEFORE creating a new version (else you need to revert a lot of stuff (especially io-package!) because the version then never went out.
+* Check your emails/GitHub actions page to see if the release was successfully

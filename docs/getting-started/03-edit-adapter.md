@@ -22,46 +22,6 @@ Now have a look at the boilerplate and example code in `main.js` or `main.ts`. Y
 where eventHandlers are added to `ready`, `stateChange` and `unload` by default. These are the functions that ioBroker 
 will call in your code. First we will implement to download some data from the API in `onReady` after the adapter start.
 
-=== "JavaScript"
-
-    ```js
-    class TestAdapter extends utils.Adapter {
-        /**
-        * @param {Partial<utils.AdapterOptions>} [options={}]
-        */
-        constructor(options) {
-		    super({
-			    ...options,
-			    name: "test",
-		    });
-		    this.on("ready", this.onReady.bind(this));
-		    this.on("stateChange", this.onStateChange.bind(this));
-		    // this.on("objectChange", this.onObjectChange.bind(this));
-		    // this.on("message", this.onMessage.bind(this));
-		    this.on("unload", this.onUnload.bind(this));
-	    }
-    }
-    ```
-
-=== "TypeScript"
-
-    ```ts
-    class TestAdapter extends utils.Adapter {
-
-        public constructor(options: Partial<utils.AdapterOptions> = {}) {
-            super({
-                ...options,
-                name: "test",
-            });
-            this.on("ready", this.onReady.bind(this));
-            this.on("stateChange", this.onStateChange.bind(this));
-            // this.on("objectChange", this.onObjectChange.bind(this));
-            // this.on("message", this.onMessage.bind(this));
-            this.on("unload", this.onUnload.bind(this));
-        }
-    }
-    ```
-
 You should read the examples in the `onReady` function that already explain how the adapter interacts with ioBroker in a
 lot of common examples. Feel free to try different things here, too. If you create objects and set states you can see 
 the results of your actions in the [dev-server admin](http://localhost:8081/#tab-objects). 
@@ -70,7 +30,7 @@ Now let's retrieve some data in the `onReady` function. Replace the existing cod
 === "JavaScript"
 
     ``` js
-    async onReady {
+    async onReady() {
         //download data:
 		const url = "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/de.wikipedia/all-access/all-agents/IoBroker/daily/20220401/20220404";
 		try {
@@ -144,67 +104,70 @@ Now let's retrieve some data in the `onReady` function. Replace the existing cod
     ```
 
 If you have `dev-server watch` running as explained earlier this should already create a few objects with values in 
-ioBroker on file save. But currently this is very static code. Let's allow the user to select a date.
+ioBroker on file save. But currently this is very static code. Let's allow the user to select a date. 
 
-<!-- TODO: this is not necessary anymore if https://github.com/ioBroker/create-adapter/issues/724 gets fixed. --> 
+We start by defining the parameters for our adapter in `io-package.json`, change the `native` section to this:
 
-Admin 5 allows us to easily add an options page without minding frontend code at all. Currently we need to enable this 
-manually. So in `io-broker.json` add these settings into the `common` object:
-```json
-"adminUI": {
-  "config": "json"
-},
-"globalDependencies": [
-  {
-    "admin": ">=5.0.0"
-  }
-]
-```
-and replace the `native` object in the same file like this:
 ```json
 "native": {
 	"startDate": "20220401",
 	"endDate": "20220404"
 },
 ```
-
-Now create a new file `jsonConfig.json` in the `admin` sub-folder with this content:
+JSON UI allows us to easily add an options page in ioBroker.admin without minding frontend code at all. The UI is defined in `admin/jsonConfig.json`, 
+so we change it to reflect our new options:
 ```json
 {
-  "type": "tabs",
+  "type": "panel",
+  "i18n": true,
   "items": {
-    "main": {
-      "type": "panel",
-      "items": {
-        "startDate": {
-          "newLine": true,
-          "type": "text",
-          "label": "Start Date:",
-          "maxLength": 8,
-          "validator": "/[0-9]{8}/.test(data.startDate)"
-        },
-        "endDate": {
-          "type": "text",
-          "label": "End Date:",
-          "maxLength": 8,
-          "validator": "/[0-9]{8}/.test(data.endDate)"
-        },
-        "_errorMessage": {
-          "newLine": true,
-          "type": "staticText",
-          "text": "Please enter Date in format YYYYMMDD.",
-          "hidden": "/[0-9]{8}/.test(data.startDate) && /[0-9]{8}/.test(data.endDate)",
-          "style": {
-            "color": "red"
-          }
-        }
+    "startDate": {
+      "newLine": true,
+      "type": "text",
+      "label": "Start Date:",
+      "maxLength": 8,
+      "validator": "/[0-9]{8}/.test(data.startDate)"
+    },
+    "endDate": {
+      "type": "text",
+      "label": "End Date:",
+      "maxLength": 8,
+      "validator": "/[0-9]{8}/.test(data.endDate)"
+    },
+    "_errorMessage": {
+      "newLine": true,
+      "type": "staticText",
+      "text": "Please enter Date in format YYYYMMDD.",
+      "hidden": "/[0-9]{8}/.test(data.startDate) && /[0-9]{8}/.test(data.endDate)",
+      "style": {
+        "color": "red"
       }
     }
   }
 }
 ```
 
-Hint: You might need to restart `dev-server` after changes to `io-package.json` and currently also `jsonConfig.json`.
+For typescript Adapters, also change `src/lib/adminConfig.ts` to this:
+=== "TypeScript"
+    ```ts
+    // This file extends the AdapterConfig type from "@types/iobroker"
+
+    // Augment the globally declared type ioBroker.AdapterConfig
+    declare global {
+	    namespace ioBroker {
+    		interface AdapterConfig {
+		    	startDate: string;
+			    endDate: string;
+		    }
+	    }
+    }
+
+    // this is required so the above AdapterConfig is found by TypeScript / type checking
+    export {};
+    ```
+
+Hint: In order for changes to `io-package.json` and `jsonConfig.json` an upload is required. You can do that by running
+`dev-server upload` in your adapter directory.
 
 It will add two text fields in configuration where the user can select start and enddates for our page views request. Now
 we need to adjust the `onReady` code to read the config and adjust the request.
@@ -302,7 +265,7 @@ we need to adjust the `onReady` code to read the config and adjust the request.
     ```
 
 Of course, you would need to add a few checks for the user input. Also loading only once in the `onReady` function is only
-useful for schedule Adapter, daemons usually employ `setTimeout` (preferred) to regularly download something or even listen
+useful for schedule Adapter, daemons usually employ `setTimeout` to regularly download something or even listen
 on events coming from the outside. But this should give you a basic idea on how to fill ioBroker states from an API request.
 
 If you want to listen to state changes (i.e. the user wants to control a device) this happens in `onStateChange`. Feel
