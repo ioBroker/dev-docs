@@ -31,8 +31,9 @@ Now let's retrieve some data in the `onReady` function. Replace the existing cod
 
     ``` js
     async onReady() {
+        axios.defaults.timeout = 5000; //set timeout to 5 seconds
         //download data:
-		const url = "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/de.wikipedia/all-access/all-agents/IoBroker/daily/20220401/20220404";
+		const url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/de.wikipedia/all-access/all-agents/IoBroker/daily/20220401/20220404';
 		try {
 			const response = await axios.get(url);
 			if (response.status === 200) {
@@ -42,10 +43,10 @@ Now let's retrieve some data in the `onReady` function. Replace the existing cod
 				for (const day of data.items) {
 					//create object, using timestamp as ID. ID should always be unique and constant for a certain device.
 					await this.setObjectNotExistsAsync(day.timestamp, {
-						type: "state",
+						type: 'state',
 						common: {
-							type: "number",
-							role: "state",
+							type: 'number',
+							role: 'value', //select a role from https://www.iobroker.net/#en/documentation/dev/stateroles.md - try to be as specific as possible.
 							read: true,
 							write: false,
 							name: `Day ${day.timestamp}`
@@ -57,10 +58,10 @@ Now let's retrieve some data in the `onReady` function. Replace the existing cod
 					await this.setStateAsync(day.timestamp, day.views, true);
 				}
 			} else {
-				this.log.error("Could not retrieve data, status code " + response.status);
+				this.log.error('Could not retrieve data, status code ' + response.status);
 			}
 		} catch (e) {
-			this.log.error("Could not retrieve data: " + e.message);
+			this.log.error('Could not retrieve data: ' + e.message);
 		}
     }
     ```
@@ -68,7 +69,8 @@ Now let's retrieve some data in the `onReady` function. Replace the existing cod
 === "TypeScript"
 
     ``` ts
-    private async onReady(): Promise<void> {
+    private async onReady(): Promise<void> { 
+        axios.defaults.timeout = 5000; //set timeout to 5 seconds
 		//download data:
 		const url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/de.wikipedia/all-access/all-agents/IoBroker/daily/20220401/20220404';
 		try {
@@ -83,7 +85,7 @@ Now let's retrieve some data in the `onReady` function. Replace the existing cod
 						type: 'state',
 						common: {
 							type: 'number',
-							role: 'state',
+							role: 'value', //select a role from https://www.iobroker.net/#en/documentation/dev/stateroles.md - try to be as specific as possible.
 							read: true,
 							write: false,
 							name: `Day ${day.timestamp}`
@@ -102,6 +104,10 @@ Now let's retrieve some data in the `onReady` function. Replace the existing cod
 		}
 	}
     ```
+
+Regarding the `role` property of the state: Select a role from [this list](https://www.iobroker.net/#en/documentation/dev/stateroles.md).
+Try to be as specific as possible. If you think a role is missing, feel free to create a pull request and propose a change for [this file](https://github.com/ioBroker/ioBroker.docs/blob/master/docs/en/dev/stateroles.md). 
+Using the right role here will allow other adapers in the ioBroker ecosystem to understand what your state is about and control it.
 
 If you have `dev-server watch` running as explained earlier this should already create a few objects with values in 
 ioBroker on file save. But currently this is very static code. Let's allow the user to select a date. 
@@ -177,6 +183,7 @@ we need to adjust the `onReady` code to read the config and adjust the request.
     async onReady() {
         const adapterObjects = await this.getAdapterObjectsAsync(); //get all current adapter objects. 
 
+        axios.defaults.timeout = 5000; //set timeout to 5 seconds
         //download data:
         const url = `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/de.wikipedia/all-access/all-agents/IoBroker/daily/${this.config.startDate}/${this.config.endDate}`;
         try {
@@ -191,7 +198,7 @@ we need to adjust the `onReady` code to read the config and adjust the request.
 						type: 'state',
 						common: {
 							type: 'number',
-							role: 'state',
+							role: 'value', //select a role from https://www.iobroker.net/#en/documentation/dev/stateroles.md - try to be as specific as possible.
 							read: true,
 							write: false,
 							name: `Day ${day.timestamp}`
@@ -222,6 +229,8 @@ we need to adjust the `onReady` code to read the config and adjust the request.
     ``` ts
     private async onReady(): Promise<void> {
         const adapterObjects = await this.getAdapterObjectsAsync(); //get all current adapter objects.
+
+        axios.defaults.timeout = 5000; //set timeout to 5 seconds
 		//download data:
 		const url = `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/de.wikipedia/all-access/all-agents/IoBroker/daily/${this.config.startDate}/${this.config.endDate}`;
 		try {
@@ -236,7 +245,7 @@ we need to adjust the `onReady` code to read the config and adjust the request.
 						type: 'state',
 						common: {
 							type: 'number',
-							role: 'state',
+							role: 'value', //select a role from https://www.iobroker.net/#en/documentation/dev/stateroles.md - try to be as specific as possible.
 							read: true,
 							write: false,
 							name: `Day ${day.timestamp}`
